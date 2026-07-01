@@ -11,7 +11,7 @@ It helps an agent and a user work together to choose the right ecommerce skills,
 Use this bundle when the user says things like:
 
 - I want to start an ecommerce workflow but do not know where to begin.
-- I only need the first 3-5 skills for my current goal.
+- I only need the skills that match my current goal.
 - Help me set up product research, store setup, automation, or support step by step.
 - Read this bundle and guide me through the right path.
 
