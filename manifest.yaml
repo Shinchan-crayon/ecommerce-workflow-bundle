@@ -1,0 +1,340 @@
+schema_version: "1.0"
+bundle:
+  id: "ecommerce-workflow-bundle"
+  name: "Ecommerce Workflow Bundle"
+  language: "zh-CN"
+  version: "1.0.0"
+  owner: "ThinkAI"
+  status: "active"
+  start_file: "START_HERE.md"
+  selector_file: "skill-selector.md"
+  router_file: "deployment-router.md"
+  created_at: "2026-07-01"
+
+principles:
+  - "Prefer the smallest useful subset of skills."
+  - "Do not assume all users need all 14 skills."
+  - "Treat upstream open-source tools as external dependencies."
+  - "Explain prerequisites before deployment."
+  - "Do not present this bundle as one-click automation."
+
+scenes:
+  - id: "SC01"
+    name: "选品研究"
+    order: 1
+    description: "Find candidate products and monitor market changes."
+  - id: "SC02"
+    name: "素材处理"
+    order: 2
+    description: "Prepare images and promotional assets."
+  - id: "SC03"
+    name: "店铺系统"
+    order: 3
+    description: "Set up product, inventory, and order structure."
+  - id: "SC04"
+    name: "自动化运营"
+    order: 4
+    description: "Automate operational notifications and alerts."
+  - id: "SC05"
+    name: "客服转化"
+    order: 5
+    description: "Handle customer messages, triage, and canned replies."
+
+upstream_tools:
+  - id: "changedetection"
+    name: "changedetection.io"
+    role: "webpage change detection"
+  - id: "picpilot"
+    name: "PicPilot"
+    role: "product image and video generation"
+  - id: "medusa"
+    name: "Medusa"
+    role: "commerce backend and store system"
+  - id: "n8n"
+    name: "n8n"
+    role: "workflow automation"
+  - id: "chatwoot"
+    name: "Chatwoot"
+    role: "omnichannel support inbox"
+
+skills:
+  - id: "SK01"
+    order: 1
+    name: "商品价格与库存监控"
+    scene_id: "SC01"
+    type: "tool-assisted"
+    status: "published"
+    site_skill_id: 13
+    repo: "https://github.com/Shinchan-crayon/product-price-stock-monitoring"
+    upstream_tool_id: "changedetection"
+    prerequisites:
+      - "product page URLs"
+      - "a working changedetection.io instance"
+      - "notification method"
+    outputs:
+      - "monitoring targets"
+      - "change rules"
+      - "notification plan"
+    next:
+      - "SK02"
+      - "SK03"
+  - id: "SK02"
+    order: 2
+    name: "竞品商品页面变化提醒"
+    scene_id: "SC01"
+    type: "tool-assisted"
+    status: "published"
+    site_skill_id: 14
+    repo: "https://github.com/Shinchan-crayon/competitor-product-page-change-alerts"
+    upstream_tool_id: "changedetection"
+    prerequisites:
+      - "competitor page URLs"
+      - "a working changedetection.io instance"
+    outputs:
+      - "competitor watchlist"
+      - "change filters"
+      - "alert rules"
+    next:
+      - "SK03"
+      - "SK06"
+  - id: "SK03"
+    order: 3
+    name: "商品图片局部编辑"
+    scene_id: "SC02"
+    type: "tool-assisted"
+    status: "published"
+    site_skill_id: 15
+    repo: "https://github.com/Shinchan-crayon/product-image-local-editing"
+    upstream_tool_id: "picpilot"
+    prerequisites:
+      - "product images"
+      - "editable regions"
+      - "a working PicPilot or equivalent image workflow"
+    outputs:
+      - "editing prompt"
+      - "local edit plan"
+      - "review checklist"
+    next:
+      - "SK04"
+      - "SK06"
+  - id: "SK04"
+    order: 4
+    name: "商品图片扩展与场景生成"
+    scene_id: "SC02"
+    type: "tool-assisted"
+    status: "published"
+    site_skill_id: 16
+    repo: "https://github.com/Shinchan-crayon/product-image-expansion-scene-generation"
+    upstream_tool_id: "picpilot"
+    prerequisites:
+      - "base product image"
+      - "target scene or channel format"
+    outputs:
+      - "scene prompt"
+      - "expansion plan"
+      - "asset review checklist"
+    next:
+      - "SK05"
+      - "SK06"
+  - id: "SK05"
+    order: 5
+    name: "商品图片转营销视频"
+    scene_id: "SC02"
+    type: "tool-assisted"
+    status: "published"
+    site_skill_id: 17
+    repo: "https://github.com/Shinchan-crayon/product-image-to-marketing-video"
+    upstream_tool_id: "picpilot"
+    prerequisites:
+      - "product image"
+      - "movement goal"
+      - "video generation environment"
+    outputs:
+      - "motion prompt"
+      - "parameter suggestion"
+      - "video review checklist"
+    next:
+      - "SK06"
+  - id: "SK06"
+    order: 6
+    name: "商品目录与规格配置"
+    scene_id: "SC03"
+    type: "planning"
+    status: "published"
+    site_skill_id: 18
+    repo: "https://github.com/Shinchan-crayon/product-catalog-variant-configuration"
+    upstream_tool_id: "medusa"
+    prerequisites:
+      - "product list"
+      - "variant information"
+    outputs:
+      - "catalog plan"
+      - "variant structure"
+      - "category mapping"
+    next:
+      - "SK07"
+      - "SK08"
+  - id: "SK07"
+    order: 7
+    name: "商品库存与仓库配置"
+    scene_id: "SC03"
+    type: "planning"
+    status: "published"
+    site_skill_id: 19
+    repo: "https://github.com/Shinchan-crayon/product-inventory-warehouse-configuration"
+    upstream_tool_id: "medusa"
+    prerequisites:
+      - "sku list"
+      - "warehouse or stock location information"
+    outputs:
+      - "inventory structure"
+      - "stock location plan"
+      - "replenishment thresholds"
+    next:
+      - "SK08"
+      - "SK10"
+  - id: "SK08"
+    order: 8
+    name: "订单与履约流程配置"
+    scene_id: "SC03"
+    type: "planning"
+    status: "published"
+    site_skill_id: 20
+    repo: "https://github.com/Shinchan-crayon/order-fulfillment-flow-configuration"
+    upstream_tool_id: "medusa"
+    prerequisites:
+      - "order rules"
+      - "payment rules"
+      - "shipping rules"
+    outputs:
+      - "order status flow"
+      - "fulfillment checkpoints"
+      - "exception handling map"
+    next:
+      - "SK09"
+      - "SK11"
+  - id: "SK09"
+    order: 9
+    name: "新订单自动通知"
+    scene_id: "SC04"
+    type: "automation-design"
+    status: "published"
+    site_skill_id: 21
+    repo: "https://github.com/Shinchan-crayon/new-order-auto-notification"
+    upstream_tool_id: "n8n"
+    prerequisites:
+      - "order event source"
+      - "notification channels"
+    outputs:
+      - "trigger design"
+      - "message template"
+      - "failure fallback"
+    next:
+      - "SK10"
+      - "SK11"
+  - id: "SK10"
+    order: 10
+    name: "低库存自动预警"
+    scene_id: "SC04"
+    type: "automation-design"
+    status: "published"
+    site_skill_id: 22
+    repo: "https://github.com/Shinchan-crayon/low-stock-auto-alert"
+    upstream_tool_id: "n8n"
+    prerequisites:
+      - "inventory data source"
+      - "threshold rules"
+    outputs:
+      - "alert conditions"
+      - "notification routing"
+      - "repeat suppression rules"
+    next:
+      - "SK11"
+  - id: "SK11"
+    order: 11
+    name: "发货状态自动通知"
+    scene_id: "SC04"
+    type: "automation-design"
+    status: "published"
+    site_skill_id: 23
+    repo: "https://github.com/Shinchan-crayon/shipment-status-auto-notification"
+    upstream_tool_id: "n8n"
+    prerequisites:
+      - "shipment data source"
+      - "customer notification channel"
+    outputs:
+      - "shipping status map"
+      - "customer notification templates"
+      - "internal exception alerts"
+    next:
+      - "SK12"
+  - id: "SK12"
+    order: 12
+    name: "多渠道客户消息聚合"
+    scene_id: "SC05"
+    type: "tool-assisted"
+    status: "published"
+    site_skill_id: 24
+    repo: "https://github.com/Shinchan-crayon/multi-channel-customer-message-aggregation"
+    upstream_tool_id: "chatwoot"
+    prerequisites:
+      - "customer channels"
+      - "team inbox rules"
+    outputs:
+      - "channel setup plan"
+      - "inbox mapping"
+      - "responsibility map"
+    next:
+      - "SK13"
+      - "SK14"
+  - id: "SK13"
+    order: 13
+    name: "客户咨询自动分类与分流"
+    scene_id: "SC05"
+    type: "automation-design"
+    status: "published"
+    site_skill_id: 25
+    repo: "https://github.com/Shinchan-crayon/customer-inquiry-auto-triage-routing"
+    upstream_tool_id: "chatwoot"
+    prerequisites:
+      - "support samples"
+      - "team routing rules"
+    outputs:
+      - "triage labels"
+      - "routing logic"
+      - "manual escalation rules"
+    next:
+      - "SK14"
+  - id: "SK14"
+    order: 14
+    name: "常见问题快捷回复"
+    scene_id: "SC05"
+    type: "content-library"
+    status: "published"
+    site_skill_id: 26
+    repo: "https://github.com/Shinchan-crayon/customer-faq-quick-replies"
+    upstream_tool_id: "chatwoot"
+    prerequisites:
+      - "faq samples"
+      - "store policies"
+    outputs:
+      - "canned responses"
+      - "reply boundaries"
+      - "review checklist"
+    next: []
+
+presets:
+  - id: "starter"
+    file: "presets/starter.yaml"
+  - id: "research-first"
+    file: "presets/research-first.yaml"
+  - id: "content-first"
+    file: "presets/content-first.yaml"
+  - id: "store-setup"
+    file: "presets/store-setup.yaml"
+  - id: "automation-first"
+    file: "presets/automation-first.yaml"
+  - id: "support-first"
+    file: "presets/support-first.yaml"
+  - id: "full"
+    file: "presets/full.yaml"

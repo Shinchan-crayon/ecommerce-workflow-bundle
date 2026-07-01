@@ -1,0 +1,7 @@
+id: "starter"
+name: "Starter Path"
+goal: "Give a first-time user a minimal but complete cross-scene introduction."
+skills:
+  - "SK01"
+  - "SK03"
+  - "SK06"

@@ -1,0 +1,7 @@
+id: "store-setup"
+name: "Store Setup"
+goal: "Build the backend product, inventory, and order structure."
+skills:
+  - "SK06"
+  - "SK07"
+  - "SK08"
