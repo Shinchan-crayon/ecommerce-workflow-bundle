@@ -6,7 +6,7 @@ It is not a one-click automation package.
 It is a guided workflow package that helps an agent:
 
 - understand the full workflow,
-- choose only the relevant 3-5 skills when needed,
+- choose only the relevant skill subset when needed,
 - explain prerequisites,
 - route the user through the right order,
 - and point to the correct upstream tools.
